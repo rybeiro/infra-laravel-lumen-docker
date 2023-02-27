@@ -1,0 +1,30 @@
+version: "3"
+services:
+  webserver-nginx:
+    image: nginx:stable
+    container_name: webserver-nginx
+    volumes:
+      - ./default.conf:/etc/nginx/templates/default.conf.template
+      - ./application:/application
+    ports:
+      - "8000:80"
+    links:
+      - webserver-php
+
+  webserver-php:
+    build: .
+    container_name: webserver-php
+    volumes:
+      - ./application:/application
+
+  webserver-db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=app_postgres
+    
